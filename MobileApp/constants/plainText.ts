@@ -20,6 +20,16 @@ export const TEXTS = {
         continueWith: "or continue with",
         footerText: "Do You have an account?",
         signIn: "sign in",
+        errors: {
+            fullNameRequired: "Full name is required",
+            fullNameMinLength: "Name must be at least 3 characters",
+            emailRequired: "Email is required",
+            invalidEmail: "Please enter valid email",
+            phoneRequired: "Phone number is required",
+            invalidPhone: "Please enter valid phone number",
+            passwordRequired: "Password is required",
+            passwordMinLength: "Password must be at least 6 characters",
+        },
     },
     LOGIN: {
         title: "Login",
@@ -34,5 +44,78 @@ export const TEXTS = {
         continueWith: "or continue with",
         footerText: "Don't have an account?",
         signUp: "sign up",
+
+        errors: {
+            emailRequired: "Email is required",
+            invalidEmail: "Please enter valid email",
+            passwordRequired: "Password is required",
+            passwordMinLength: "Password must be at least 6 characters",
+        },
     },
+    Index: {
+        Category: "Category",
+        Products: "Products",
+        Filters: "Filters",
+    },
+    ProductDetails: {
+        addToCart: "Add To Cart",
+        buyNow: "Buy Now",
+        title: "Product Details",
+    },
+    ACCOUNT: {
+        TITLE: "Account Details",
+        SUBTITLE: "Manage your account details here",
+        FULL_NAME: "Full Name: ",
+        EMAIL: "Email: ",
+        PHONE: "Phone Number: ",
+    },
+    ADDRESS: {
+        TITLE: "Address Details",
+        SUBTITLE: "Manage your saved addresses here",
+        HOME: "Home Address",
+        ADD_NEW: "Add New Address",
+        OTHER: "Other Address",
+    },
+    SECURITY: {
+        TITLE: "Security",
+        SUBTITLE: "Manage your account security settings",
+        CHANGE_PASSWORD: "Change Password",
+        CHANGE_PASSWORD_SUBTITLE:
+            "Ensure your account is secure by updating your password regularly.",
+        OLD_PASSWORD: "Old Password",
+        NEW_PASSWORD: "New Password",
+        CONFIRM_PASSWORD: "Confirm Password",
+        UPDATE_PASSWORD: "Update Password",
+        FACE_ID: "Face ID Security",
+        FACE_ID_SUBTITLE:
+            "Enable Face ID authentication for faster and secure login.",
+        ENABLED: "Enabled",
+        DISABLED: "Disabled",
+        LOGOUT: "Logout",
+        LOGOUT_SUBTITLE:
+            "Sign out of your account from this device.",
+    },
+    EDIT_PROFILE: {
+        TITLE: "User Details",
+        FULL_NAME_LABEL: "Full Name",
+        FULL_NAME_PLACEHOLDER: "Enter full name",
+        PHONE_LABEL: "Phone No.",
+        PHONE_PLACEHOLDER: "Enter phone number",
+        EMAIL_LABEL: "Email",
+        EMAIL_PLACEHOLDER: "Enter email",
+        CHOOSE_FILE: "Choose File",
+        UPDATE: "Update",
+        UPLOAD: "Upload Photo",
+         SUCCESS: "Profile updated successfully",
+        ERRORS: {
+            FULL_NAME_REQUIRED:
+                "Full name is required",
+            PHONE_REQUIRED:
+                "Phone number is required",
+            EMAIL_REQUIRED:
+                "Email is required",
+            ONE_FIELD_REQUIRED: "At least one field is required",
+        },
+    },
+
 }
