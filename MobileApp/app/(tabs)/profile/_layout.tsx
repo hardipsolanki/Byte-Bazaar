@@ -6,8 +6,6 @@ import {
 } from "@react-navigation/material-top-tabs";
 import { TabNavigationState, ParamListBase } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const { Navigator } = createMaterialTopTabNavigator();
 
@@ -21,7 +19,7 @@ export const MaterialTopTabs = withLayoutContext<
 const Layout = () => {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
-      <MaterialTopTabs></MaterialTopTabs>;
+      <MaterialTopTabs></MaterialTopTabs>
     </SafeAreaView>
   );
 };

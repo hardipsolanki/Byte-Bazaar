@@ -72,7 +72,7 @@ export const TEXTS = {
     ADDRESS: {
         TITLE: "Address Details",
         SUBTITLE: "Manage your saved addresses here",
-        HOME: "Home Address",
+        HOME: "Primary Address",
         ADD_NEW: "Add New Address",
         OTHER: "Other Address",
     },
@@ -106,7 +106,7 @@ export const TEXTS = {
         CHOOSE_FILE: "Choose File",
         UPDATE: "Update",
         UPLOAD: "Upload Photo",
-         SUCCESS: "Profile updated successfully",
+        SUCCESS: "Profile updated successfully",
         ERRORS: {
             FULL_NAME_REQUIRED:
                 "Full name is required",
@@ -116,6 +116,18 @@ export const TEXTS = {
                 "Email is required",
             ONE_FIELD_REQUIRED: "At least one field is required",
         },
+    },
+    CHECKOUT: {
+        SELECT_DELIVERY_ADDRESS: "Select Delivery Address",
+        ADD_NEW_ADDRESS: "+ Add New Address",
+        PRICE_DETAILS: "Price Details",
+        TOTAL_PRODUCTS_PRICE: "Total Products Price:",
+        TOTAL_DISCOUNT: "Total Discount:",
+        TOTAL_PRICE: "Total Price:",
+        CONTINUE: "Continue",
+        NO_ADDRESS_TITLE: "No Address Found",
+        NO_ADDRESS_SUBTITLE:
+            "Please add a delivery address to continue checkout.",
     },
 
 }

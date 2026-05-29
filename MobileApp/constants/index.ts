@@ -11,6 +11,8 @@ const ROUTES = {
     about: "about",
     productDetails: "products/[slug]",
     cart: "cart",
+    addressCheckout: "checkout/address-checkout",
+    paymentCheckout: "checkout/payment-checkout",
 
 }
 
@@ -25,6 +27,8 @@ const ROUTES_PATH = {
     about: "/about",
     productDetails: "/products/[slug]",
     cart: "/cart",
+    addressCheckout: "/checkout/address-checkout",
+    paymentCheckout: "/checkout/payment-checkout",
 } as const
 
 export { ROUTES, ROUTES_PATH }

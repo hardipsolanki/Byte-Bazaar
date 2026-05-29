@@ -35,3 +35,29 @@ export interface GetAddressesRes {
     message: string;
     success: boolean
 }
+export interface UpdateAddress {
+    addressLine?: string;
+    country?: string;
+    state?: string;
+    city?: string;
+    pincode?: string;
+    isPrimary?: boolean
+}
+export interface UpdateAddressReq {
+    addressId: string
+    data: UpdateAddress
+}
+export interface UpdateAddressesRes {
+    data: {
+        _id: string;
+        addressLine: string;
+        country: string;
+        state: string;
+        city: string;
+        pincode: string;
+        isPrimary: boolean,
+    }
+    status: number;
+    message: string;
+    success: boolean
+}

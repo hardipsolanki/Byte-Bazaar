@@ -266,6 +266,30 @@ export const authSlice = createSlice({
             .addCase(logOutUser.rejected, (state) => {
                 state.loading = "failed"
             })
+
+            // update user details
+            .addCase(updateDetails.pending, (state) => {
+                state.loading = "pending"
+            })
+            .addCase(updateDetails.fulfilled, (state, { payload }) => {
+                state.loading = "succeeded"
+                state.userData = { ...state.userData, ...payload.data }
+            })
+            .addCase(updateDetails.rejected, (state) => {
+                state.loading = "failed"
+            })
+
+            // update user avatar details
+            .addCase(updateAvatar.pending, (state) => {
+                state.loading = "pending"
+            })
+            .addCase(updateAvatar.fulfilled, (state, { payload }) => {
+                state.loading = "succeeded"
+                if (state.userData) state.userData = { ...state.userData, avatar: payload.data.avatar }
+            })
+            .addCase(updateAvatar.rejected, (state) => {
+                state.loading = "failed"
+            })
     }
 
 })

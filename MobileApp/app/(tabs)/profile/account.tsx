@@ -14,13 +14,12 @@ import { useAppSelector } from "@/store/hooks";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
-  BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import EditProfileBottomSheet from "@/components/sheet/UpdateUserProfile";
 
 const Account = () => {
   const bottomSheetRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ["80%"], []);
+  const snapPoints = useMemo(() => ["100%"], []);
   const openBottomSheet = () => {
     bottomSheetRef.current?.present();
   };

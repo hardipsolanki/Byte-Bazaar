@@ -1,5 +1,5 @@
-import { getReq, postReq } from '@/services/axiosInstance';
-import { AddAddressReq, AddAddressRes, Address, GetAddressesRes } from '@/types/address';
+import { getReq, patchReq, postReq } from '@/services/axiosInstance';
+import { AddAddressReq, AddAddressRes, Address, GetAddressesRes, UpdateAddress, UpdateAddressesRes, UpdateAddressReq } from '@/types/address';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 
@@ -38,6 +38,26 @@ export const getAddresses = createAsyncThunk(
             return response.data
         } catch (error: any) {
             console.log('Error while fetch adddresses: ', error)
+            return rejectWithValue({
+                message: error.data.message,
+                status: error.status,
+                data: error.data.data
+            })
+        }
+    },
+)
+
+export const updateAddress = createAsyncThunk(
+    'address/update',
+    async ({ addressId, data }: UpdateAddressReq, { rejectWithValue }) => {
+        try {
+            const response = await patchReq<UpdateAddress, UpdateAddressesRes>(
+                `/api/v1/address/${addressId}`,
+                data,
+            )
+            return response.data
+        } catch (error: any) {
+            console.log('Error while update address: ', error)
             return rejectWithValue({
                 message: error.data.message,
                 status: error.status,
@@ -86,6 +106,27 @@ export const addressSlice = createSlice({
                 state.addresses?.push(payload.data)
             })
             .addCase(addAddress.rejected, (state) => {
+                state.loading = 'failed'
+            })
+            // update address
+            .addCase(updateAddress.pending, (state) => {
+                state.loading = 'pending'
+            })
+            .addCase(updateAddress.fulfilled, (state, { payload }) => {
+                state.loading = 'succeeded'
+                if (state.addresses) {
+                    if (payload.data.isPrimary) {
+                        const primaryAddressIndex = state.addresses?.findIndex(add => add.isPrimary === true)
+                        if (primaryAddressIndex !== -1) {
+                            state.addresses[primaryAddressIndex].isPrimary = false
+                        }
+                    }
+
+                    const findAddIndex = state.addresses?.findIndex(add => add._id === payload.data._id)
+                    state.addresses.splice(findAddIndex, 1, payload.data)
+                }
+            })
+            .addCase(updateAddress.rejected, (state) => {
                 state.loading = 'failed'
             })
     }

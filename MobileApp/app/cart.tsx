@@ -30,12 +30,15 @@ import { Product } from "@/types/product";
 import Toast from "react-native-toast-message";
 import Input from "@/components/common/Input";
 import { applyCoupon } from "@/features/couponSlice";
+import { useRouter } from "expo-router";
+import { ROUTES_PATH } from "@/constants";
 
 const Cart = () => {
   const dispatch = useAppDispatch();
   const { cart, loading } = useAppSelector(({ cart }) => cart);
   const { loading: couponLoading } = useAppSelector(({ coupons }) => coupons);
   const [couponCode, setCouponCode] = React.useState<string>("");
+  const router = useRouter();
 
   useEffect(() => {
     if (!cart?.items.length) dispatch(getUserCart());
@@ -150,7 +153,7 @@ const Cart = () => {
             showsVerticalScrollIndicator={false}
             renderItem={renderCartItem}
             ListHeaderComponent={
-              <View>
+              <View style={styles.productDetails}>
                 <Text style={styles.priceTitle}>Products Details</Text>
               </View>
             }
@@ -203,17 +206,19 @@ const Cart = () => {
                     loading={couponLoading === "pending"}
                   />
                 </View>
-
-                {/* Checkout */}
-                <Button
-                  title="Proceed to Checkout"
-                  onPress={() => {}}
-                  style={styles.checkoutButton}
-                />
               </View>
             }
           />
+          {/* Checkout */}
         </View>
+          <View style={styles.checkoutContainer}>
+            
+          <Button
+            title="Proceed to Checkout"
+            onPress={() => router.push(ROUTES_PATH.addressCheckout)}
+            style={styles.checkoutButton}
+          />
+          </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -241,6 +246,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.border,
     marginTop: SPACING.sm,
     marginBottom: SPACING.lg,
+  },
+  productDetails: {
+    marginTop: SPACING.lg,
   },
 
   productCard: {
@@ -348,12 +356,12 @@ const styles = StyleSheet.create({
 
   discountLabel: {
     fontSize: FONT_SIZE.md,
-    color: "green",
+    color: COLORS.success,
   },
 
   discountValue: {
     fontSize: FONT_SIZE.md,
-    color: "green",
+    color: COLORS.success,
   },
 
   innerDivider: {
@@ -417,10 +425,14 @@ const styles = StyleSheet.create({
   },
 
   checkoutButton: {
-    marginTop: SPACING.xl,
+    marginVertical: SPACING.md,
   },
   cartContainer: {
     flex: 1,
     marginHorizontal: SPACING.lg,
   },
+  checkoutContainer: {
+    backgroundColor: COLORS.white,
+    padding: SPACING.md,
+  }
 });

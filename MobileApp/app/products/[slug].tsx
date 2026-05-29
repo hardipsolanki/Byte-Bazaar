@@ -48,7 +48,7 @@ const productDetails = () => {
   useEffect(() => {
     dispatch(getProduct(slug));
     dispatch(getRating(slug));
-  }, [dispatch, slug]);
+  }, [dispatch]);
 
   const handleAddToCartItem = (productSlug: string) => {
     const productInCart = cartItem?.find((item) => item.product.slug === slug);

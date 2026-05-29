@@ -121,7 +121,7 @@ export const createOrder = createAsyncThunk(
     async ({ addressId, paymentType }: CreateOrderReq, { rejectWithValue }) => {
         try {
             const response = await postReq<{ paymentType: "COD" | "STRIPE" }, CreateOrderRes>(
-                `/api/v1/order/${addressId}`,
+                `/api/v1/order/create-order-web/${addressId}`,
                 { paymentType }
 
             )

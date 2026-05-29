@@ -13,6 +13,8 @@ export const COLORS = {
     greenStatus: "#00c951",
     yellow: "#f0b000",
     logo: "#2fbaa3",
+    success: "#00a63e",
+    paymentMethod: "#f0f6ff",
 
     error: "#DC2626",
 }

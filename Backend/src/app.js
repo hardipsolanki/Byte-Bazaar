@@ -16,6 +16,13 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
+
+// webhook
+app.use(
+  "/api/v1/order/webhook",
+  express.raw({ type: "application/json" })
+)
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));

@@ -1,37 +1,26 @@
 import React, { useState } from "react";
-
 import {
   Image,
-  KeyboardAvoidingView,
-  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
-
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-
 import { Controller, useForm } from "react-hook-form";
-
 import { COLORS } from "@/theme/colors";
 import { SPACING } from "@/theme/spacing";
 import { RADIUS } from "@/theme/radius";
-
 import { FONT_SIZE, FONT_WEIGHT } from "@/theme/typography";
-
 import { TEXTS } from "@/constants/plainText";
-
 import Input from "@/components/common/Input";
 import Button from "@/components/common/Button";
-
 import { imagePicker } from "@/utils/imagePicker";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { updateAvatar, updateDetails } from "@/features/authSlice";
-
 import Toast from "react-native-toast-message";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Inputs = {
   fullName?: string;
@@ -49,8 +38,7 @@ interface EditProfileBottomSheetProps {
 }
 
 const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
-  const { userData } = useAppSelector(({ users }) => users);
-
+  const { userData, loading } = useAppSelector(({ users }) => users);
   const dispatch = useAppDispatch();
 
   const [avatar, setAvatar] = useState<string | null>(userData?.avatar || null);
@@ -64,7 +52,7 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
     defaultValues: {
       fullName: userData?.fullName || "",
       email: userData?.email || "",
-      phoneNumber: userData?.phoneNumber || ("" as any),
+      phoneNumber: userData?.phoneNumber?.toString() || "",
     },
   });
 
@@ -83,13 +71,9 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
       data.fullName?.trim() && data.fullName !== userData?.fullName;
 
     const isEmailChanged = data.email?.trim() && data.email !== userData?.email;
-
-    const isPhoneChanged =
-      data.phoneNumber?.trim() &&
-      data.phoneNumber !== (userData?.phoneNumber as any);
+    const isPhoneChanged = data.phoneNumber != userData?.phoneNumber;
 
     const isAvatarChanged = !!data.avatar;
-
     const hasAtLeastOneUpdate =
       isFullNameChanged || isEmailChanged || isPhoneChanged || isAvatarChanged;
 
@@ -111,7 +95,15 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
           email: data.email,
           phoneNumber: data.phoneNumber as any,
         }),
-      );
+      )
+        .unwrap()
+        .then(() => {
+          Toast.show({
+            type: "success",
+            text1: TEXTS.EDIT_PROFILE.SUCCESS,
+          });
+          onClose();
+        });
     }
 
     // Update Avatar
@@ -120,21 +112,22 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
         updateAvatar({
           avatar: data.avatar,
         }),
-      );
+      )
+        .unwrap()
+        .then(() => {
+          Toast.show({
+            type: "success",
+            text1: TEXTS.EDIT_PROFILE.SUCCESS,
+          });
+          onClose();
+        });
     }
-
-    Toast.show({
-      type: "success",
-      text1: TEXTS.EDIT_PROFILE.SUCCESS,
-    });
-
-    onClose();
   };
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      // behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       {/* HEADER */}
       <View style={styles.header}>
@@ -227,9 +220,10 @@ const EditProfileBottomSheet = ({ onClose }: EditProfileBottomSheetProps) => {
         <Button
           title={TEXTS.EDIT_PROFILE.UPDATE}
           onPress={handleSubmit(onSubmit)}
+          loading={loading === "pending"}
         />
       </View>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
@@ -243,7 +237,6 @@ const styles = StyleSheet.create({
 
   header: {
     paddingHorizontal: SPACING.lg,
-    paddingTop: SPACING.md,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -259,7 +252,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     right: SPACING.lg,
-    top: SPACING.md,
+    top: SPACING.xs,
   },
 
   divider: {
