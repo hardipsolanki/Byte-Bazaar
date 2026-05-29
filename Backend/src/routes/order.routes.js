@@ -8,6 +8,8 @@ import {
     updateOrderStatusAndIsPaymentDone,
     verifyStripePayment,
     getUserSingleOrder,
+    initializedPaymentSheeet,
+    stripeWebhook,
 } from "../controllers/order.controller.js";
 import {
     createOrderValidator,
@@ -19,8 +21,13 @@ import { userRole } from "../constant.js";
 const router = Router()
 
 
-router.route("/:addressId")
+router.route("/create-order-web/:addressId")
     .post(verifyJWT, createOrderValidator(), validate, createOrder)
+
+router.route("/create-order-mobile/:addressId")
+    .post(verifyJWT, createOrderValidator(), validate, initializedPaymentSheeet)
+router.route("/webhook")
+    .post(express.raw({ type: "application/json" }), stripeWebhook)
 
 router.route("/stripe-payment-verify")
     .get(verifyStripePayment)

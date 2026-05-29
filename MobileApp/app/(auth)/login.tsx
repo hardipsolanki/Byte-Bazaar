@@ -2,7 +2,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -21,11 +21,54 @@ import GoogleImage from "@/assets/svg/Google";
 import Facebook from "@/assets/svg/Faceboo";
 import { useRouter } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
-
+import { Controller, useForm } from "react-hook-form";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { UserLoginRequest } from "@/types/auth";
+import { loginUser } from "@/features/authSlice";
+import Toast from "react-native-toast-message";
+import { Linking } from "react-native";
 const login = () => {
-    const router = useRouter();
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.users);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<UserLoginRequest>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (data: UserLoginRequest) => {
+    dispatch(loginUser(data))
+      .unwrap()
+      .then((data) => {
+        Toast.show({
+          type: "success",
+          text1: data.message,
+        });
+        router.push(ROUTES_PATH.home);
+      })
+      .catch((error) => {
+        Toast.show({
+          type: "error",
+          text1: error.message,
+        });
+      });
+  };
+
+  const handleAuthGoogle = async () => {
+    await Linking.openURL(process.env.EXPO_PUBLIC_GOOGLE_REDIRECT_URL as any);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.black} />
+
       <KeyboardAvoidingView
         style={styles.keyboardContainer}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -36,32 +79,88 @@ const login = () => {
               <Text style={styles.title}>{TEXTS.LOGIN.title}</Text>
               <Text style={styles.subtitle}>{TEXTS.LOGIN.subtitle}</Text>
             </View>
+
             <View style={styles.inputsContainer}>
-              <Input
-                placeholder={TEXTS.LOGIN.emailPlaceholder}
-                label={TEXTS.LOGIN.emailLabel}
+              {/* EMAIL */}
+              <Controller
+                control={control}
+                name="email"
+                rules={{
+                  required: TEXTS.LOGIN.errors.emailRequired,
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: TEXTS.LOGIN.errors.invalidEmail,
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <>
+                    <Input
+                      placeholder={TEXTS.LOGIN.emailPlaceholder}
+                      label={TEXTS.LOGIN.emailLabel}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                    />
+
+                    {errors.email && (
+                      <Text style={styles.errorText}>
+                        {errors.email.message}
+                      </Text>
+                    )}
+                  </>
+                )}
               />
-              <Input
-                placeholder={TEXTS.LOGIN.passwordPlaceholder}
-                label={TEXTS.LOGIN.passwordLabel}
-                secureTextEntry
+
+              {/* PASSWORD */}
+              <Controller
+                control={control}
+                name="password"
+                rules={{
+                  required: TEXTS.LOGIN.errors.passwordRequired,
+                  minLength: {
+                    value: 6,
+                    message: TEXTS.LOGIN.errors.passwordMinLength,
+                  },
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <>
+                    <Input
+                      placeholder={TEXTS.LOGIN.passwordPlaceholder}
+                      label={TEXTS.LOGIN.passwordLabel}
+                      secureTextEntry
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={onBlur}
+                    />
+
+                    {errors.password && (
+                      <Text style={styles.errorText}>
+                        {errors.password.message}
+                      </Text>
+                    )}
+                  </>
+                )}
               />
+
               <Button
                 title={TEXTS.LOGIN.buttonTitle}
                 variant="primary"
                 fullWidth
-                onPress={() => {}}
+                onPress={handleSubmit(onSubmit)}
+                loading={loading === "pending"}
               />
             </View>
+
             <View style={styles.dividerContainer}>
               <View style={styles.line} />
-              <Text style={styles.dividerText}>
-                {TEXTS.LOGIN.continueWith}
-              </Text>
+
+              <Text style={styles.dividerText}>{TEXTS.LOGIN.continueWith}</Text>
+
               <View style={styles.line} />
             </View>
+
             <View style={styles.socialContainer}>
-              <SocialButton title="Google" onPress={() => {}}>
+              <SocialButton title="Google" onPress={handleAuthGoogle}>
                 <GoogleImage style={{ width: 20, height: 20 }} />
               </SocialButton>
 
@@ -69,8 +168,10 @@ const login = () => {
                 <Facebook style={{ width: 20, height: 20 }} />
               </SocialButton>
             </View>
+
             <View style={styles.footer}>
               <Text style={styles.footerText}>{TEXTS.LOGIN.footerText}</Text>
+
               <Pressable onPress={() => router.push(ROUTES_PATH.auth.SIGNUP)}>
                 <Text style={styles.signInText}>{TEXTS.LOGIN.signUp}</Text>
               </Pressable>
@@ -90,14 +191,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     marginTop: SPACING.lg,
   },
+
   keyboardContainer: {
     flex: 1,
   },
+
   loginConatiner: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+
   formConatiner: {
     width: "90%",
     padding: SPACING.md,
@@ -105,27 +209,33 @@ const styles = StyleSheet.create({
     marginHorizontal: SPACING.md,
     borderRadius: RADIUS.md,
   },
+
   textContainer: {
     alignItems: "center",
     justifyContent: "center",
     gap: SPACING.xs,
   },
+
   title: {
     fontSize: FONT_SIZE.xl,
     fontWeight: "bold",
   },
+
   subtitle: {
     fontSize: 16,
     color: COLORS.gray,
   },
+
   inputsContainer: {
     marginTop: SPACING.lg,
     gap: SPACING.lg,
   },
+
   countryCodeContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
+
   countryContainer: {
     justifyContent: "space-between",
     gap: SPACING.xs,
@@ -152,6 +262,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     paddingBottom: SPACING.xs,
   },
+
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -169,10 +280,12 @@ const styles = StyleSheet.create({
     color: COLORS.gray400,
     paddingHorizontal: 4,
   },
+
   socialContainer: {
     flexDirection: "row",
     gap: SPACING.md,
   },
+
   footer: {
     flexDirection: "row",
     justifyContent: "center",
@@ -190,5 +303,11 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.sm,
     fontWeight: FONT_WEIGHT.semibold,
     color: COLORS.gray900,
+  },
+
+  errorText: {
+    color: COLORS.error,
+    fontSize: FONT_SIZE.xs,
+    marginTop: -10,
   },
 });

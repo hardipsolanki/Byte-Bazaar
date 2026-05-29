@@ -3,10 +3,18 @@ export const COLORS = {
     white: "#ffffff",
     black: "#000000",
     gray: "#63758f",
+    gray100: "#F3F4F6",
     gray300: "#CBD5E1",
     gray400: "#94A3B8",
     gray500: "#64748B",
     gray900: "#0F172A",
+    border: "#e4e6eb",
+    blue: "#145efc",
+    greenStatus: "#00c951",
+    yellow: "#f0b000",
+    logo: "#2fbaa3",
+    success: "#00a63e",
+    paymentMethod: "#f0f6ff",
 
     error: "#DC2626",
 }

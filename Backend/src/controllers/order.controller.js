@@ -167,6 +167,125 @@ const createOrder = asyncHandler(async (req, res) => {
 
 })
 
+const initializedPaymentSheeet = asyncHandler(async (req, res) => {
+
+    const { addressId } = req.params;
+    const { paymentType } = req.body
+
+    if (!addressId) {
+        throw new APIError(400, "Address id is required")
+    }
+
+    const address = await Address.findById(addressId)
+
+    if (!address) {
+        throw new APIError(404, "Address not found")
+    }
+
+    const cart = await getCart(req.user._id)
+
+    if (!cart.items.length) {
+        throw new APIError(400, "User cart is empty")
+    }
+
+    if (paymentType !== userPaymentType.STRIPE) {
+        const order = await Order.create({
+            orderPrice: cart.discountedTotal,
+            address: addressId,
+            items: cart.items,
+            user: req.user._id,
+            coupon: cart.items[0].coupon,
+            paymentType
+        })
+        await updateProductQuantityAndClearCartHalper(req)
+        return res
+            .status(201)
+            .json(
+                new APIResponse(201, order, "Order Create Successfully")
+            )
+    } else {
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: cart.discountedTotal * 100,
+            currency: "inr",
+            metadata: {
+                userId: req.user._id.toString(),
+                addressId
+            }
+        })
+
+        return res.
+            status(200).
+            json({
+                clientSecret: paymentIntent.client_secret
+            })
+    }
+
+
+})
+
+const stripeWebhook = async (req, res) => {
+
+    const signature = req.headers["stripe-signature"]
+
+    let event
+
+    try {
+
+        event = stripe.webhooks.constructEvent(
+            req.body,
+            signature,
+            process.env.STRIPE_WEBHOOK_SECRET
+        )
+
+    } catch (err) {
+
+        console.log(
+            "⚠️ Webhook signature verification failed.",
+            err.message
+        )
+
+        return res.sendStatus(400)
+    }
+
+    // PAYMENT SUCCESS
+    if (event.type === "payment_intent.succeeded") {
+
+        const paymentIntent = event.data.object
+
+        // Prevent duplicate orders
+        const existingOrder = await Order.findOne({
+            paymentId: paymentIntent.id
+        })
+
+        if (existingOrder) {
+            return res.json({ received: true })
+        }
+
+        const userId = paymentIntent.metadata.userId
+        const addressId = paymentIntent.metadata.addressId
+
+        const cart = await getCart(userId)
+
+        const order = await Order.create({
+            orderPrice: cart.discountedTotal,
+            address: addressId,
+            items: cart.items,
+            coupon: cart.items[0]?.coupon,
+            user: userId,
+            paymentType: "STRIPE",
+            paymentId: paymentIntent.id,
+            isPaymentDone: true
+        })
+
+        await updateProductQuantityAndClearCartHalper(
+            userId
+        )
+
+        console.log("Order created successfully", order._id)
+    }
+
+    res.json({ received: true })
+}
 const verifyStripePayment = asyncHandler(async (req, res) => {
     const { success, session: sessionId } = req.query
 
@@ -742,5 +861,7 @@ export {
     getOrdersByAdmin,
     getUserOrders,
     getSingleOrderByAdmin,
-    getUserSingleOrder
+    getUserSingleOrder,
+    initializedPaymentSheeet,
+    stripeWebhook
 }
