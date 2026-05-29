@@ -9,7 +9,10 @@ import { StripeProvider } from "@stripe/stripe-react-native";
 
 export default function RootLayout() {
   return (
-    <StripeProvider publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_Key as any}>
+    <StripeProvider 
+    merchantIdentifier="merchant.com.MobileApp" 
+    publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY as any}
+    >
       <Provider store={store}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <BottomSheetModalProvider>
