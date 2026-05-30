@@ -3,8 +3,10 @@
 # dependencies
 node_modules/
 
-coverage/
+# dotenv environment variables file
 .env
+.env.test
+.env.production
 
 # Expo
 .expo/
