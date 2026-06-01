@@ -105,13 +105,22 @@ const Payment = () => {
             console.log(paymentResponse.error);
             return;
           }
+          dispatch(getUserCart())
+            .unwrap()
+            .then(() => {
+              router.push(ROUTES_PATH.paymentSucess);
+            });
+        } else {
+          dispatch(getUserCart())
+            .unwrap()
+            .then(() => {
+              router.push(ROUTES_PATH.paymentSucess);
+            });
         }
-        dispatch(getUserCart()).unwrap().then(() => {
-          router.push(ROUTES_PATH.paymentSucess);
-        });
-      }).catch((error) => {
-        console.log("Error while placing order: ", error);
       })
+      .catch((error) => {
+        console.log("Error while placing order: ", error);
+      });
   };
 
   return (

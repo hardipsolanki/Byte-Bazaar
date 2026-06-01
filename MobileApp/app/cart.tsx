@@ -52,7 +52,8 @@ const Cart = () => {
       .then((data) => {
         dispatch(getUserCart())
           .unwrap()
-          .then(() => {
+          .then((cart) => {
+            console.log({cart})
             Toast.show({
               type: "success",
               text1: data.message,
