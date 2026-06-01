@@ -274,7 +274,6 @@ const stripeWebhook = async (req, res) => {
 
         const cart = await getCart(userId)
 
-        console.log("metaData: ", paymentIntent.metadata)
 
         const order = await Order.create({
             orderPrice: cart.discountedTotal,
@@ -287,9 +286,8 @@ const stripeWebhook = async (req, res) => {
             isPaymentDone: true
         })
 
-        await updateProductQuantityAndClearCartHalper(req, userId)
+        await updateProductQuantityAndClearCartHalper(null, userId)
 
-        console.log("Order created successfully", order._id)
     }
 
     res.json({ received: true })
