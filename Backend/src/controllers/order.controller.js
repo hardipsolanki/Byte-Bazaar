@@ -49,11 +49,18 @@ const updateProductQuantityAndClearCartHalper = async (req, userId) => {
 
         await Product.bulkWrite(bulkStockUpdates, { skipValidation: true })
 
-        await Cart.findOneAndUpdate({
-            user: req.user._id,
-            items: [],
-            coupon: null
-        })
+        await Cart.findOneAndUpdate(
+            { user: req.user._id },
+            {
+                $set: {
+                    items: [],
+                    cartTotal: 0,
+                    discountedTotal: 0,
+                    coupon: null
+                }
+            },
+            { new: true }
+        )
 
         await sendEmail({
             email: req.user.email,
@@ -240,7 +247,7 @@ const stripeWebhook = async (req, res) => {
     } catch (err) {
 
         console.log(
-            "⚠️ Webhook signature verification failed.",
+            "Webhook signature verification failed.",
             err.message
         )
 

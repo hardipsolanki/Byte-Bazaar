@@ -26,22 +26,18 @@ import {
 } from "@stripe/stripe-react-native";
 import { router } from "expo-router";
 import { ROUTES_PATH } from "@/constants";
-
-const cart = {
-  cartTotal: 1582,
-  discountValue: 0,
-  discountedTotal: 1582,
-};
+import { getUserCart } from "@/features/cartSlice";
 
 const Payment = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<PaymentMethodType>("COD");
   const dispatch = useAppDispatch();
   const addressId = useAppSelector(({ checkout }) => checkout.addressId);
+  const cart = useAppSelector(({ cart }) => cart.cart);
+  const orderLoading = useAppSelector(({ orders }) => orders.loading);
   useEffect(() => {
     const loadCheckoutData = async () => {
       const addressId = await AsyncStorage.getItem("checkout_addressId");
-
       dispatch(loadAddressId(addressId));
     };
     loadCheckoutData();
@@ -86,7 +82,6 @@ const Payment = () => {
     );
   };
   const handlePlaceOrder = () => {
-    // 1. backend call
     if (!addressId) return;
     dispatch(
       createOrder({
@@ -96,10 +91,10 @@ const Payment = () => {
     )
       .unwrap()
       .then(async (res) => {
-        if (res.data.clientSecret) {
+        if (res.clientSecret) {
           const initResponse = await initPaymentSheet({
             merchantDisplayName: "Byte Bazaar",
-            paymentIntentClientSecret: res.data.clientSecret,
+            paymentIntentClientSecret: res.clientSecret,
           });
           if (initResponse.error) {
             console.log(initResponse.error);
@@ -110,11 +105,13 @@ const Payment = () => {
             console.log(paymentResponse.error);
             return;
           }
-          router.push(ROUTES_PATH.home);
-          console.log("order create via stripe sucessfully.", paymentResponse);
         }
-      });
-
+        dispatch(getUserCart()).unwrap().then(() => {
+          router.push(ROUTES_PATH.paymentSucess);
+        });
+      }).catch((error) => {
+        console.log("Error while placing order: ", error);
+      })
   };
 
   return (
@@ -165,7 +162,11 @@ const Payment = () => {
 
       {/* FOOTER */}
       <View style={styles.footer}>
-        <Button title="Place Order" onPress={handlePlaceOrder} />
+        <Button
+          loading={orderLoading === "pending"}
+          title="Place Order"
+          onPress={handlePlaceOrder}
+        />
       </View>
     </SafeAreaView>
   );

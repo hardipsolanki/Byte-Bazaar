@@ -49,6 +49,14 @@ export default function RootLayout() {
                 name={ROUTES.paymentCheckout}
                 options={{ headerShown: false }}
               />
+              <Stack.Screen
+                name={ROUTES.paymentSucess}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={ROUTES.singleOrder}
+                options={{ headerShown: false }}
+              />
             </Stack>
             <Toast />
           </BottomSheetModalProvider>

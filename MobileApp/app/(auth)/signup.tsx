@@ -75,7 +75,7 @@ const signup = () => {
           type: "success",
           text1: data.message,
         });
-        router.push(ROUTES_PATH.home);
+        router.push(ROUTES_PATH.auth.LOGIN);
       })
       .catch((error) => {
         Toast.show({

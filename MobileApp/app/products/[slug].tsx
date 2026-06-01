@@ -31,7 +31,8 @@ import Toast from "react-native-toast-message";
 import { addItemOrUpdateItemQuantity, getUserCart } from "@/features/cartSlice";
 import { ROUTES_PATH } from "@/constants";
 
-const productDetails = () => {
+const ProductDetails = () => {
+  console.log("product render")
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -391,7 +392,7 @@ const productDetails = () => {
   );
 };
 
-export default productDetails;
+export default ProductDetails;
 
 const styles = StyleSheet.create({
   container: {

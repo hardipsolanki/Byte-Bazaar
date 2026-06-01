@@ -16,6 +16,7 @@ import AddAddressBottomSheet from "@/components/sheet/AddOrUpdateAddress";
 import AddressSkeleton from "@/components/skeletons/addressSkeleton";
 import PageHeader from "@/components/common/PageHeader";
 import { ROUTES_PATH } from "@/constants";
+import { setAddressId } from "@/features/checkoutSlice";
 
 // const addresses = [
 //   {
@@ -34,6 +35,7 @@ const Checkout = () => {
   const dispatch = useAppDispatch();
   const { addresses, loading } = useAppSelector((state) => state.addresses);
   const cart = useAppSelector((state) => state.cart.cart);
+  const primaryAddress = addresses?.find(a => a.isPrimary)
 
   const bottomSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ["100%"], []);
@@ -143,7 +145,11 @@ const Checkout = () => {
         <Button
           textStyle={styles.addButtonText}
           title={TEXTS.CHECKOUT.CONTINUE}
-          onPress={() => router.push(ROUTES_PATH.paymentCheckout)}
+          disabled={!addresses?.length}
+          onPress={() =>{
+            dispatch(setAddressId(primaryAddress?._id || ""))
+             router.push(ROUTES_PATH.paymentCheckout)
+            }}
         />
       </View>
 

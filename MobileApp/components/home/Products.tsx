@@ -20,6 +20,7 @@ const Products = () => {
     if (!products?.length) dispatch(getProducts());
   }, [dispatch]);
 
+
   const productDetail = (product: Product) => {
     return (
       <Link
