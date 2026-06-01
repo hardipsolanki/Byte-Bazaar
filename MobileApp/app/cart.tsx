@@ -40,6 +40,8 @@ const Cart = () => {
   const [couponCode, setCouponCode] = React.useState<string>("");
   const router = useRouter();
 
+  console.log("cart render")
+
   useEffect(() => {
     if (!cart?.items.length) dispatch(getUserCart());
   }, [dispatch]);
@@ -217,6 +219,7 @@ const Cart = () => {
             title="Proceed to Checkout"
             onPress={() => router.push(ROUTES_PATH.addressCheckout)}
             style={styles.checkoutButton}
+            disabled={!cart?.items.length}
           />
           </View>
       </KeyboardAvoidingView>

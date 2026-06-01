@@ -8,6 +8,7 @@ import addressSlice from '@/features/addressSlice'
 import cartSlice from '@/features/cartSlice'
 import couponSlice from '@/features/couponSlice'
 import clearCheckout from '@/features/checkoutSlice'
+import orderSlice from '@/features/orderSlice'
 export const store = configureStore({
   reducer: {
     users: userSlice,
@@ -18,7 +19,8 @@ export const store = configureStore({
     addresses: addressSlice,
     cart: cartSlice,
     coupons: couponSlice,
-    checkout: clearCheckout
+    checkout: clearCheckout,
+    orders: orderSlice
   },
 })
 

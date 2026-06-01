@@ -66,9 +66,7 @@ export interface CreateOrderReq {
     paymentType: "COD" | "STRIPE"
 }
 export interface CreateOrderRes {
-    data: {
         clientSecret: string
-    }
     statusCode: number;
     message: string;
     success: boolean

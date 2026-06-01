@@ -7,12 +7,14 @@ const ROUTES = {
     tabs: "(tabs)",
     home: "home",
     profile: "profile",
-    order: "order",
+    order: "orders",
     about: "about",
     productDetails: "products/[slug]",
     cart: "cart",
     addressCheckout: "checkout/address-checkout",
     paymentCheckout: "checkout/payment-checkout",
+    paymentSucess: "checkout/success",
+    singleOrder: "orders/[orderId]",
 
 }
 
@@ -29,6 +31,9 @@ const ROUTES_PATH = {
     cart: "/cart",
     addressCheckout: "/checkout/address-checkout",
     paymentCheckout: "/checkout/payment-checkout",
+    paymentSucess: "/checkout/success",
+    myOrders: "/orders",
+    singleOrder: "/orders/[orderId]",
 } as const
 
 export { ROUTES, ROUTES_PATH }

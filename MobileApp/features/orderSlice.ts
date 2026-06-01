@@ -31,8 +31,10 @@ export const getUserSingleOrder = createAsyncThunk(
     'order/user/getSingle',
     async (orderId: string, { rejectWithValue }) => {
         try {
+            console.time("single-order-api");
             const response = await getReq<GetUserSingleOrderRes>(`/api/v1/order/user-orders/${orderId}`)
-            return response.data
+            console.timeEnd("single-order-api");
+            return response.data    
         } catch (error: any) {
             console.log('Error while fetch user single order: ', error)
             return rejectWithValue({
